@@ -519,3 +519,31 @@ footer {
     align-items: center;
     gap: 4px;
 }
+
+.loop-button {
+    height: 45px;
+    padding: 0 12px;
+    border: 1px solid #444;
+    background: transparent;
+    color: var(--gray);
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.loop-button:hover {
+    background: var(--white);
+    color: var(--black);
+    border-color: var(--white);
+}
+
+.loop-button[aria-pressed="true"] {
+    background: var(--white);
+    color: var(--black);
+    border-color: var(--white);
+}
