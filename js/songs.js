@@ -1,7 +1,7 @@
 const songs = [
     {
         id: "song1",
-        title: "Gonna go gambiling",
+        title: "Gonna go Gambling",
         artist: "Oricade",
         cover: "images/covers/song1.jpg",
         audio: "music/song1.mp3",
