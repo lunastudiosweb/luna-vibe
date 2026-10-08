@@ -1,0 +1,101 @@
+.submit-hero {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 150px 6% 120px;
+}
+
+.submit-hero h1 {
+    max-width: 900px;
+    font-size: clamp(60px, 9vw, 130px);
+    font-weight: 500;
+    letter-spacing: -0.06em;
+    line-height: 0.92;
+    margin-bottom: 40px;
+}
+
+.submit-intro {
+    max-width: 560px;
+    color: var(--light-gray);
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+
+.submit-section {
+    width: 88%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding-bottom: 150px;
+}
+
+
+.submit-section .section-header {
+    margin-bottom: 60px;
+}
+
+
+.submit-section .section-header h2 {
+    max-width: 700px;
+}
+
+
+.submission-box {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 45px 0;
+}
+
+
+.submission-box p {
+    max-width: 700px;
+    color: var(--light-gray);
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+
+.email-button {
+    display: inline-block;
+    margin-top: 20px;
+
+    color: var(--white);
+    text-decoration: none;
+
+    font-size: 17px;
+    font-weight: 500;
+
+    border-bottom: 1px solid var(--white);
+    padding-bottom: 5px;
+
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.email-button:hover {
+    color: var(--gray);
+    border-color: var(--gray);
+}
+
+
+@media (max-width: 700px) {
+
+    .submit-hero {
+        padding: 100px 6% 100px;
+    }
+
+    .submit-hero h1 {
+        font-size: clamp(52px, 15vw, 90px);
+    }
+
+    .submit-intro {
+        font-size: 16px;
+    }
+
+    .submit-section {
+        width: 88%;
+    }
+
+}
