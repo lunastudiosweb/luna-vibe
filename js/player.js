@@ -1,7 +1,9 @@
 const songList = document.getElementById("song-list");
 
+let currentlyPlayingAudio = null;
 
-function createSong(song) {
+
+function createSong(song, songIndex) {
 
     const songCard = document.createElement("article");
 
@@ -132,11 +134,44 @@ function createSong(song) {
         songCard.querySelector(".player-time");
 
 
+    /*
+    =========================================
+    PLAY / PAUSE
+    =========================================
+    */
+
     playButton.addEventListener("click", () => {
 
         if (audio.paused) {
 
+            /*
+            Stop any other song that is currently playing.
+            */
+
+            if (
+                currentlyPlayingAudio &&
+                currentlyPlayingAudio !== audio
+            ) {
+
+                currentlyPlayingAudio.pause();
+
+                currentlyPlayingAudio.currentTime = 0;
+
+                const oldButton =
+                    currentlyPlayingAudio
+                        .closest(".song-card")
+                        ?.querySelector(".play-button");
+
+                if (oldButton) {
+                    oldButton.textContent = "▶";
+                }
+
+            }
+
+
             audio.play();
+
+            currentlyPlayingAudio = audio;
 
             playButton.textContent = "Ⅱ";
 
@@ -151,6 +186,12 @@ function createSong(song) {
     });
 
 
+    /*
+    =========================================
+    AUDIO METADATA
+    =========================================
+    */
+
     audio.addEventListener("loadedmetadata", () => {
 
         timeDisplay.textContent =
@@ -158,6 +199,12 @@ function createSong(song) {
 
     });
 
+
+    /*
+    =========================================
+    PROGRESS + TIME
+    =========================================
+    */
 
     audio.addEventListener("timeupdate", () => {
 
@@ -177,6 +224,12 @@ function createSong(song) {
     });
 
 
+    /*
+    =========================================
+    MANUAL SEEKING
+    =========================================
+    */
+
     progressBar.addEventListener("input", () => {
 
         if (!audio.duration) return;
@@ -188,11 +241,100 @@ function createSong(song) {
     });
 
 
+    /*
+    =========================================
+    SONG ENDED
+    =========================================
+    */
+
     audio.addEventListener("ended", () => {
 
         playButton.textContent = "▶";
 
         progressBar.value = 0;
+
+        timeDisplay.textContent =
+            `0:00 / ${formatTime(audio.duration)}`;
+
+
+        currentlyPlayingAudio = null;
+
+
+        /*
+        Find the next song in the sorted list.
+        */
+
+        const nextIndex =
+            songIndex + 1;
+
+
+        if (nextIndex >= sortedSongs.length) {
+
+            return;
+
+        }
+
+
+        /*
+        Find the next song card.
+        */
+
+        const allSongCards =
+            document.querySelectorAll(".song-card");
+
+
+        const nextSongCard =
+            allSongCards[nextIndex];
+
+
+        if (!nextSongCard) return;
+
+
+        const nextAudio =
+            nextSongCard.querySelector("audio");
+
+        const nextButton =
+            nextSongCard.querySelector(".play-button");
+
+
+        /*
+        Start the next song.
+        */
+
+        if (nextAudio) {
+
+            nextAudio.play();
+
+            currentlyPlayingAudio =
+                nextAudio;
+
+            if (nextButton) {
+                nextButton.textContent = "Ⅱ";
+            }
+
+        }
+
+    });
+
+
+    /*
+    =========================================
+    AUDIO PAUSED
+    =========================================
+    */
+
+    audio.addEventListener("pause", () => {
+
+        /*
+        Do not reset the song here.
+        This allows normal pause/resume behavior.
+        */
+
+        if (!audio.ended) {
+
+            playButton.textContent = "▶";
+
+        }
 
     });
 
@@ -206,7 +348,9 @@ function createSong(song) {
 function formatTime(seconds) {
 
     if (!Number.isFinite(seconds)) {
+
         return "0:00";
+
     }
 
 
@@ -289,9 +433,9 @@ if (sortedSongs.length === 0) {
     songList.innerHTML = "";
 
 
-    sortedSongs.forEach(song => {
+    sortedSongs.forEach((song, index) => {
 
-        createSong(song);
+        createSong(song, index);
 
     });
 
