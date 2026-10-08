@@ -32,7 +32,7 @@ const songs = [
     {
         id: "song4",
         title: "Your Silly Femboy DocterDaryl Cover",
-        artist: "CG5",
+        artist: "DocterDaryl",
         cover: "images/covers/song4.png",
         audio: "music/song4.mp3",
         description: "The fourth release.",
