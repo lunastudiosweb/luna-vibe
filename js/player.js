@@ -79,6 +79,14 @@ function createSong(song, songIndex) {
                 ▶
             </button>
 
+            <button
+                class="loop-button"
+                aria-label="Loop ${song.title}"
+                aria-pressed="false"
+            >
+                LOOP
+            </button>
+
 
             <div class="player-content">
 
@@ -127,11 +135,17 @@ function createSong(song, songIndex) {
     const playButton =
         songCard.querySelector(".play-button");
 
+    const loopButton =
+        songCard.querySelector(".loop-button");
+
     const progressBar =
         songCard.querySelector(".progress-bar");
 
     const timeDisplay =
         songCard.querySelector(".player-time");
+
+
+    let loopEnabled = false;
 
 
     /*
@@ -157,10 +171,11 @@ function createSong(song, songIndex) {
 
                 currentlyPlayingAudio.currentTime = 0;
 
+                const oldCard =
+                    currentlyPlayingAudio.closest(".song-card");
+
                 const oldButton =
-                    currentlyPlayingAudio
-                        .closest(".song-card")
-                        ?.querySelector(".play-button");
+                    oldCard?.querySelector(".play-button");
 
                 if (oldButton) {
                     oldButton.textContent = "▶";
@@ -180,6 +195,35 @@ function createSong(song, songIndex) {
             audio.pause();
 
             playButton.textContent = "▶";
+
+        }
+
+    });
+
+
+    /*
+    ========================================
+    LOOP BUTTON
+    ========================================
+    */
+
+    loopButton.addEventListener("click", () => {
+
+        loopEnabled = !loopEnabled;
+
+        loopButton.setAttribute(
+            "aria-pressed",
+            loopEnabled
+        );
+
+
+        if (loopEnabled) {
+
+            loopButton.textContent = "LOOP ON";
+
+        } else {
+
+            loopButton.textContent = "LOOP";
 
         }
 
@@ -248,6 +292,29 @@ function createSong(song, songIndex) {
     */
 
     audio.addEventListener("ended", () => {
+
+        /*
+        LOOP ENABLED
+        */
+
+        if (loopEnabled) {
+
+            audio.currentTime = 0;
+
+            audio.play();
+
+            playButton.textContent = "Ⅱ";
+
+            currentlyPlayingAudio = audio;
+
+            return;
+
+        }
+
+
+        /*
+        NORMAL AUTO-NEXT
+        */
 
         playButton.textContent = "▶";
 
