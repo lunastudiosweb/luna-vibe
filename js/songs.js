@@ -27,16 +27,15 @@ const songs = [
         audio: "music/song3.mp3",
         description: "The third release.",
         releaseDate: "2026-10-10"
-    }
-];
+    },
 
- {
+    {
         id: "song4",
         title: "Your Silly Femboy DocterDaryl Cover",
         artist: "CG5",
         cover: "images/covers/song4.png",
         audio: "music/song4.mp3",
-        description: "The forth release.",
+        description: "The fourth release.",
         releaseDate: "2026-10-10"
     }
 ];
