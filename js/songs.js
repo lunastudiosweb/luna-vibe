@@ -110,8 +110,8 @@ const songs = [
     },
     {
         id: "song13",
-        title: "Song 13",
-        artist: "Unknown",
+        title: "Slow Ride Alive",
+        artist: "Oricade",
         cover: "images/covers/song13.jpg",
         audio: "music/song13.mp3",
         description: "The thirteenth release.",
