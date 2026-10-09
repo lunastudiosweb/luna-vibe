@@ -83,8 +83,8 @@ const songs = [
     },
     {
         id: "song10",
-        title: "Song 10",
-        artist: "Unknown",
+        title: "i think that i'm dead",
+        artist: "Oricade",
         cover: "images/covers/song10.jpg",
         audio: "music/song10.mp3",
         description: "The tenth release.",
