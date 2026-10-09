@@ -101,8 +101,8 @@ const songs = [
     },
     {
         id: "song12",
-        title: "Song 12",
-        artist: "Unknown",
+        title: "LOCKED IN AMMONIA",
+        artist: "Oricade",
         cover: "images/covers/song12.jpg",
         audio: "music/song12.mp3",
         description: "The twelfth release.",
