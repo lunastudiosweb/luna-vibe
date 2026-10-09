@@ -3,6 +3,12 @@ const songList = document.getElementById("song-list");
 let currentlyPlayingAudio = null;
 
 
+/*
+========================================
+CREATE SONG
+========================================
+*/
+
 function createSong(song, songIndex) {
 
     const songCard = document.createElement("article");
@@ -43,7 +49,6 @@ function createSong(song, songIndex) {
                 >
 
             </a>
-
 
             <div class="song-details">
 
@@ -87,6 +92,26 @@ function createSong(song, songIndex) {
                 LOOP
             </button>
 
+            <div class="volume-control">
+
+                <button
+                    class="volume-button"
+                    aria-label="Mute ${song.title}"
+                    aria-pressed="false"
+                >
+                    VOL
+                </button>
+
+                <input
+                    type="range"
+                    class="volume-slider"
+                    min="0"
+                    max="100"
+                    value="100"
+                    aria-label="Volume for ${song.title}"
+                >
+
+            </div>
 
             <div class="player-content">
 
@@ -102,18 +127,16 @@ function createSong(song, songIndex) {
 
                 </div>
 
-
                 <input
                     type="range"
                     class="progress-bar"
                     value="0"
                     min="0"
                     max="100"
+                    aria-label="Seek through ${song.title}"
                 >
 
-
             </div>
-
 
             <audio preload="metadata">
 
@@ -129,6 +152,12 @@ function createSong(song, songIndex) {
     `;
 
 
+    /*
+    ========================================
+    ELEMENTS
+    ========================================
+    */
+
     const audio =
         songCard.querySelector("audio");
 
@@ -137,6 +166,12 @@ function createSong(song, songIndex) {
 
     const loopButton =
         songCard.querySelector(".loop-button");
+
+    const volumeButton =
+        songCard.querySelector(".volume-button");
+
+    const volumeSlider =
+        songCard.querySelector(".volume-slider");
 
     const progressBar =
         songCard.querySelector(".progress-bar");
@@ -147,6 +182,8 @@ function createSong(song, songIndex) {
 
     let loopEnabled = false;
 
+    let previousVolume = 1;
+
 
     /*
     ========================================
@@ -154,13 +191,9 @@ function createSong(song, songIndex) {
     ========================================
     */
 
-    playButton.addEventListener("click", () => {
+    playButton.addEventListener("click", async () => {
 
         if (audio.paused) {
-
-            /*
-            Stop any other song that is currently playing.
-            */
 
             if (
                 currentlyPlayingAudio &&
@@ -183,12 +216,21 @@ function createSong(song, songIndex) {
 
             }
 
+            try {
 
-            audio.play();
+                await audio.play();
 
-            currentlyPlayingAudio = audio;
+                currentlyPlayingAudio = audio;
 
-            playButton.textContent = "Ⅱ";
+                playButton.textContent = "Ⅱ";
+
+            } catch (error) {
+
+                console.error("Unable to play audio:", error);
+
+                playButton.textContent = "▶";
+
+            }
 
         } else {
 
@@ -203,6 +245,78 @@ function createSong(song, songIndex) {
 
     /*
     ========================================
+    VOLUME SLIDER
+    ========================================
+    */
+
+    volumeSlider.addEventListener("input", () => {
+
+        audio.volume = Number(volumeSlider.value) / 100;
+
+        if (audio.volume > 0) {
+            previousVolume = audio.volume;
+        }
+
+        updateVolumeButton();
+
+    });
+
+
+    /*
+    ========================================
+    MUTE / UNMUTE
+    ========================================
+    */
+
+    volumeButton.addEventListener("click", () => {
+
+        if (audio.volume > 0) {
+
+            previousVolume = audio.volume;
+
+            audio.volume = 0;
+
+        } else {
+
+            audio.volume = previousVolume || 1;
+
+        }
+
+        volumeSlider.value = audio.volume * 100;
+
+        updateVolumeButton();
+
+    });
+
+
+    function updateVolumeButton() {
+
+        const muted = audio.volume === 0;
+
+        volumeButton.textContent = muted ? "MUTED" : "VOL";
+
+        volumeButton.setAttribute(
+            "aria-pressed",
+            String(muted)
+        );
+
+        volumeButton.setAttribute(
+            "aria-label",
+            muted
+                ? "Unmute " + song.title
+                : "Mute " + song.title
+        );
+
+        volumeSlider.setAttribute(
+            "aria-valuetext",
+            Math.round(audio.volume * 100) + "%"
+        );
+
+    }
+
+
+    /*
+    ========================================
     LOOP BUTTON
     ========================================
     */
@@ -213,27 +327,19 @@ function createSong(song, songIndex) {
 
         loopButton.setAttribute(
             "aria-pressed",
-            loopEnabled
+            String(loopEnabled)
         );
 
-
-        if (loopEnabled) {
-
-            loopButton.textContent = "LOOP ON";
-
-        } else {
-
-            loopButton.textContent = "LOOP";
-
-        }
+        loopButton.textContent =
+            loopEnabled ? "LOOP ON" : "LOOP";
 
     });
 
 
     /*
-    =========================================
+    ========================================
     AUDIO METADATA
-    =========================================
+    ========================================
     */
 
     audio.addEventListener("loadedmetadata", () => {
@@ -245,22 +351,19 @@ function createSong(song, songIndex) {
 
 
     /*
-    =========================================
+    ========================================
     PROGRESS + TIME
-    =========================================
+    ========================================
     */
 
     audio.addEventListener("timeupdate", () => {
 
         if (!audio.duration) return;
 
-
         const progress =
             (audio.currentTime / audio.duration) * 100;
 
-
         progressBar.value = progress;
-
 
         timeDisplay.textContent =
             `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
@@ -269,52 +372,51 @@ function createSong(song, songIndex) {
 
 
     /*
-    =========================================
+    ========================================
     MANUAL SEEKING
-    =========================================
+    ========================================
     */
 
     progressBar.addEventListener("input", () => {
 
         if (!audio.duration) return;
 
-
         audio.currentTime =
-            (progressBar.value / 100) * audio.duration;
+            (Number(progressBar.value) / 100) * audio.duration;
 
     });
 
 
     /*
-    =========================================
+    ========================================
     SONG ENDED
-    =========================================
+    ========================================
     */
 
-    audio.addEventListener("ended", () => {
-
-        /*
-        LOOP ENABLED
-        */
+    audio.addEventListener("ended", async () => {
 
         if (loopEnabled) {
 
             audio.currentTime = 0;
 
-            audio.play();
+            try {
 
-            playButton.textContent = "Ⅱ";
+                await audio.play();
 
-            currentlyPlayingAudio = audio;
+                playButton.textContent = "Ⅱ";
+
+                currentlyPlayingAudio = audio;
+
+            } catch (error) {
+
+                console.error("Unable to replay audio:", error);
+
+            }
 
             return;
 
         }
 
-
-        /*
-        NORMAL AUTO-NEXT
-        */
 
         playButton.textContent = "▶";
 
@@ -331,28 +433,18 @@ function createSong(song, songIndex) {
         Find the next song in the sorted list.
         */
 
-        const nextIndex =
-            songIndex + 1;
-
+        const nextIndex = songIndex + 1;
 
         if (nextIndex >= sortedSongs.length) {
-
             return;
-
         }
 
-
-        /*
-        Find the next song card.
-        */
 
         const allSongCards =
             document.querySelectorAll(".song-card");
 
-
         const nextSongCard =
             allSongCards[nextIndex];
-
 
         if (!nextSongCard) return;
 
@@ -364,19 +456,26 @@ function createSong(song, songIndex) {
             nextSongCard.querySelector(".play-button");
 
 
-        /*
-        Start the next song.
-        */
-
         if (nextAudio) {
 
-            nextAudio.play();
+            try {
 
-            currentlyPlayingAudio =
-                nextAudio;
+                await nextAudio.play();
 
-            if (nextButton) {
-                nextButton.textContent = "Ⅱ";
+                currentlyPlayingAudio = nextAudio;
+
+                if (nextButton) {
+                    nextButton.textContent = "Ⅱ";
+                }
+
+            } catch (error) {
+
+                console.error("Unable to play next song:", error);
+
+                if (nextButton) {
+                    nextButton.textContent = "▶";
+                }
+
             }
 
         }
@@ -385,17 +484,12 @@ function createSong(song, songIndex) {
 
 
     /*
-    =========================================
+    ========================================
     AUDIO PAUSED
-    =========================================
+    ========================================
     */
 
     audio.addEventListener("pause", () => {
-
-        /*
-        Do not reset the song here.
-        This allows normal pause/resume behavior.
-        */
 
         if (!audio.ended) {
 
@@ -406,11 +500,35 @@ function createSong(song, songIndex) {
     });
 
 
+    /*
+    ========================================
+    AUDIO PLAYING
+    ========================================
+    */
+
+    audio.addEventListener("play", () => {
+
+        playButton.textContent = "Ⅱ";
+
+    });
+
+
+    /*
+    ========================================
+    ADD SONG CARD
+    ========================================
+    */
+
     songList.appendChild(songCard);
 
 }
 
 
+/*
+========================================
+FORMAT TIME
+========================================
+*/
 
 function formatTime(seconds) {
 
@@ -420,53 +538,50 @@ function formatTime(seconds) {
 
     }
 
-
     const minutes =
         Math.floor(seconds / 60);
-
 
     const remainingSeconds =
         Math.floor(seconds % 60)
             .toString()
             .padStart(2, "0");
 
-
     return `${minutes}:${remainingSeconds}`;
 
 }
 
 
+/*
+========================================
+NEW RELEASE CHECK
+========================================
+*/
 
 function isNewRelease(date) {
 
     if (!date) return false;
 
-
     const release =
         new Date(`${date}T00:00:00`);
 
-
-    const now =
-        new Date();
-
+    const now = new Date();
 
     const difference =
         now - release;
 
-
     const days =
         difference / (1000 * 60 * 60 * 24);
-
 
     return days >= 0 && days <= 14;
 
 }
 
 
-
-/* =========================================
-   SORT NEWEST FIRST
-   ========================================= */
+/*
+========================================
+SORT NEWEST FIRST
+========================================
+*/
 
 const sortedSongs = [...songs].sort((a, b) => {
 
@@ -476,10 +591,11 @@ const sortedSongs = [...songs].sort((a, b) => {
 });
 
 
-
-/* =========================================
-   LOAD SONGS
-   ========================================= */
+/*
+========================================
+LOAD SONGS
+========================================
+*/
 
 if (sortedSongs.length === 0) {
 
@@ -498,7 +614,6 @@ if (sortedSongs.length === 0) {
 } else {
 
     songList.innerHTML = "";
-
 
     sortedSongs.forEach((song, index) => {
 
