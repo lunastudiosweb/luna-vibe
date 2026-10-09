@@ -56,8 +56,8 @@ const songs = [
     },
     {
         id: "song7",
-        title: "Song 7",
-        artist: "Unknown",
+        title: "forgettable smile ",
+        artist: "Oricade",
         cover: "images/covers/song7.jpg",
         audio: "music/song7.mp3",
         description: "The seventh release.",
