@@ -552,65 +552,70 @@ footer {
 LUNA VIBE VOLUME CONTROL
 \======================================== \*/
 
+/* ========================================
+   LUNA VIBE VOLUME CONTROL V2
+======================================== */
+
 .volume-control {
-display: flex;
-align-items: center;
-gap: 8px;
-flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
 }
 
 .volume-button {
-height: 45px;
-padding: 0 12px;
-border: 1px solid #444;
-background: transparent;
-color: var(--gray);
-cursor: pointer;
-font-size: 10px;
-font-weight: 700;
-white-space: nowrap;
+    height: 45px;
+    padding: 0 12px;
+    border: 1px solid #444;
+    background: transparent;
+    color: var(--gray);
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
 }
 
-.volume-button {
-border-color: #888;
-color: white;
+.volume-button:hover {
+    background: var(--white);
+    color: var(--black);
+    border-color: var(--white);
 }
 
 .volume-button[aria-pressed="true"] {
-color: #aaa;
-border-color: #666;
+    color: var(--light-gray);
+    border-color: #666;
 }
 
 .volume-slider {
-width: 75px;
-height: 4px;
-accent-color: white;
-cursor: pointer;
-flex-shrink: 0;
+    width: 75px;
+    height: 4px;
+    accent-color: var(--white);
+    cursor: pointer;
+    flex-shrink: 0;
 }
 
-.volume-slider,
-.volume-button {
-outline: 2px solid white;
-outline-offset: 3px;
+.volume-slider:focus-visible,
+.volume-button:focus-visible {
+    outline: 2px solid var(--white);
+    outline-offset: 3px;
 }
 
 @media (max-width: 600px) {
+    .volume-control {
+        gap: 5px;
+    }
 
+    .volume-button {
+        height: 40px;
+        padding: 0 8px;
+    }
 
-.volume-control {
-    gap: 5px;
+    .volume-slider {
+        width: 50px;
+    }
 }
-
-.volume-button {
-    height: 40px;
-    padding: 0 8px;
-}
-
-.volume-slider {
-    width: 50px;
-}
-
-
-}
-
