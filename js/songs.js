@@ -74,8 +74,8 @@ const songs = [
     },
     {
         id: "song9",
-        title: "Song 9",
-        artist: "Unknown",
+        title: "taking my whole life tonight",
+        artist: "Oricade",
         cover: "images/covers/song9.jpg",
         audio: "music/song9.mp3",
         description: "The ninth release.",
