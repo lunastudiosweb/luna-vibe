@@ -619,3 +619,81 @@ LUNA VIBE VOLUME CONTROL
         width: 50px;
     }
 }
+
+
+
+/* SONG PAGE EXTRA PLAYER CONTROLS */
+
+.song-extra-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.song-extra-controls .volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.song-extra-controls .volume-button {
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #444;
+    background: transparent;
+    color: var(--gray);
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.song-extra-controls .volume-button:hover {
+    background: var(--white);
+    color: var(--black);
+    border-color: var(--white);
+}
+
+.song-extra-controls .volume-button[aria-pressed="true"] {
+    color: var(--light-gray);
+    border-color: #666;
+}
+
+.song-extra-controls .volume-slider {
+    width: 90px;
+    height: 4px;
+    accent-color: var(--white);
+    cursor: pointer;
+}
+
+.song-extra-controls .volume-button:focus-visible,
+.song-extra-controls .volume-slider:focus-visible {
+    outline: 2px solid var(--white);
+    outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+    .song-extra-controls {
+        gap: 10px;
+    }
+
+    .song-extra-controls .volume-control {
+        gap: 5px;
+    }
+
+    .song-extra-controls .volume-button {
+        padding: 0 8px;
+    }
+
+    .song-extra-controls .volume-slider {
+        width: 65px;
+    }
+}
+
