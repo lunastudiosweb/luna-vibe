@@ -65,8 +65,8 @@ const songs = [
     },
     {
         id: "song8",
-        title: "Song 8",
-        artist: "Unknown",
+        title: "Over And Over Again",
+        artist: "Oricade",
         cover: "images/covers/song8.jpg",
         audio: "music/song8.mp3",
         description: "The eighth release.",
