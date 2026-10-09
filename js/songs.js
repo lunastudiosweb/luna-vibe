@@ -47,8 +47,8 @@ const songs = [
     },
     {
         id: "song6",
-        title: "Song 6",
-        artist: "Unknown",
+        title: "plot twist 10",
+        artist: "Oricade",
         cover: "images/covers/song6.jpg",
         audio: "music/song6.mp3",
         description: "The sixth release.",
