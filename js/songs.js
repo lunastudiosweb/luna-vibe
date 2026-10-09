@@ -92,8 +92,8 @@ const songs = [
     },
     {
         id: "song11",
-        title: "Song 11",
-        artist: "Unknown",
+        title: "Can't stay with you",
+        artist: "Oricade",
         cover: "images/covers/song11.jpg",
         audio: "music/song11.mp3",
         description: "The eleventh release.",
