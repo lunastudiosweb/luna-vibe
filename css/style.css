@@ -697,3 +697,421 @@ LUNA VIBE VOLUME CONTROL
     }
 }
 
+
+
+/* =========================================
+   LUNA VIBE — MOBILE REDESIGN
+   Append this block to the END of style.css
+   ========================================= */
+
+/* Prevent accidental horizontal scrolling */
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    min-width: 0;
+    overflow-wrap: break-word;
+}
+
+img,
+video {
+    max-width: 100%;
+}
+
+/* =========================================
+   TABLETS AND PHONES
+   ========================================= */
+
+@media (max-width: 700px) {
+
+    /* Navigation */
+    .navbar {
+        width: 100%;
+        height: auto;
+        min-height: 68px;
+        padding: 20px 5%;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+    }
+
+    .logo {
+        font-size: 16px;
+        letter-spacing: 0.1em;
+    }
+
+    nav {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px 22px;
+    }
+
+    nav a {
+        font-size: 14px;
+        padding: 4px 0;
+    }
+
+    /* Hero */
+    .hero {
+        width: 100%;
+        padding: 76px 5% 85px;
+    }
+
+    .eyebrow {
+        font-size: 10px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        letter-spacing: 0.16em;
+    }
+
+    .hero h1 {
+        max-width: 100%;
+        font-size: clamp(44px, 12vw, 76px);
+        line-height: 0.98;
+        letter-spacing: -0.055em;
+        margin-bottom: 26px;
+        overflow-wrap: anywhere;
+    }
+
+    .hero-description {
+        max-width: 100%;
+        font-size: 16px;
+        line-height: 1.75;
+    }
+
+    /* Music section */
+    .music-section {
+        width: 90%;
+        max-width: none;
+        padding-bottom: 80px;
+    }
+
+    .section-header {
+        padding-top: 24px;
+        margin-bottom: 32px;
+    }
+
+    .section-header h2 {
+        font-size: clamp(32px, 9vw, 52px);
+        line-height: 1.08;
+        letter-spacing: -0.04em;
+    }
+
+    .empty-state {
+        padding: 36px 0;
+    }
+
+    .empty-state p {
+        font-size: 15px;
+    }
+
+    /* Song cards */
+    .song-card {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 22px;
+        padding: 22px 0;
+    }
+
+    .song-info {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-shrink: 1;
+    }
+
+    .song-link {
+        flex-shrink: 0;
+    }
+
+    .song-cover {
+        display: block;
+        width: 76px;
+        height: 76px;
+        max-width: 76px;
+        object-fit: cover;
+    }
+
+    .song-details {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .song-details h3 {
+        font-size: 16px;
+        line-height: 1.4;
+        margin-bottom: 4px;
+        overflow-wrap: anywhere;
+    }
+
+    .song-title-link h3 {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .song-details p {
+        font-size: 13px;
+        overflow-wrap: anywhere;
+    }
+
+    .release-date {
+        margin-top: 5px;
+        font-size: 11px;
+    }
+
+    .new-release {
+        margin-left: 0;
+        font-size: 9px;
+    }
+
+    /* Main player layout */
+    .music-player {
+        width: 100%;
+        min-width: 0;
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr);
+        align-items: center;
+        gap: 14px 12px;
+    }
+
+    .play-button {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        font-size: 13px;
+    }
+
+    .player-content {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .player-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 6px 12px;
+        margin-bottom: 12px;
+    }
+
+    .player-title {
+        min-width: 0;
+        font-size: 12px;
+        overflow-wrap: anywhere;
+    }
+
+    .player-time {
+        flex-shrink: 0;
+        font-size: 11px;
+    }
+
+    .progress-bar {
+        display: block;
+        width: 100%;
+        height: 5px;
+        min-width: 0;
+        touch-action: pan-y;
+    }
+
+    .progress-bar::-webkit-slider-thumb {
+        width: 13px;
+        height: 13px;
+    }
+
+    .progress-bar::-moz-range-thumb {
+        width: 13px;
+        height: 13px;
+    }
+
+    /* Loop and volume controls inside song cards */
+    .song-card .music-player > .loop-button,
+    .song-card .music-player > .volume-control {
+        grid-column: 1 / -1;
+        min-width: 0;
+    }
+
+    .loop-button {
+        min-height: 44px;
+        height: 44px;
+        padding: 0 14px;
+        font-size: 10px;
+    }
+
+    .volume-control {
+        max-width: 100%;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .volume-button {
+        min-height: 44px;
+        height: 44px;
+        padding: 0 12px;
+        font-size: 10px;
+    }
+
+    .volume-slider {
+        width: clamp(65px, 22vw, 100px);
+        max-width: 100%;
+        height: 6px;
+    }
+
+    /* Extra controls on individual song pages */
+    .song-extra-controls {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: 14px;
+        margin-top: 18px;
+    }
+
+    .song-extra-controls .volume-control {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .song-extra-controls .volume-button {
+        min-height: 44px;
+        height: 44px;
+        padding: 0 12px;
+    }
+
+    .song-extra-controls .volume-slider {
+        width: clamp(75px, 25vw, 120px);
+        max-width: 100%;
+        height: 6px;
+    }
+
+    /* Footer */
+    footer {
+        width: 100%;
+        padding: 35px 5%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+    }
+
+    .footer-left strong {
+        font-size: 13px;
+    }
+
+    .footer-left p,
+    .footer-right p {
+        font-size: 12px;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+    }
+
+    /* Touch feedback */
+    .play-button,
+    .loop-button,
+    .volume-button {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .play-button:focus-visible,
+    .loop-button:focus-visible,
+    nav a:focus-visible,
+    .song-title-link:focus-visible {
+        outline: 2px solid var(--white);
+        outline-offset: 4px;
+    }
+}
+
+/* =========================================
+   SMALL PHONES
+   ========================================= */
+
+@media (max-width: 380px) {
+
+    .navbar {
+        padding: 18px 5%;
+    }
+
+    nav {
+        gap: 10px 16px;
+    }
+
+    .hero {
+        padding-top: 58px;
+        padding-bottom: 68px;
+    }
+
+    .hero h1 {
+        font-size: clamp(40px, 11.5vw, 52px);
+    }
+
+    .music-section {
+        width: 90%;
+    }
+
+    .song-cover {
+        width: 64px;
+        height: 64px;
+        max-width: 64px;
+    }
+
+    .song-info {
+        gap: 12px;
+    }
+
+    .song-details h3 {
+        font-size: 15px;
+    }
+
+    .music-player {
+        gap: 12px 9px;
+    }
+
+    .volume-control,
+    .song-extra-controls .volume-control {
+        gap: 8px;
+    }
+
+    .volume-slider {
+        width: 65px;
+    }
+
+    .song-extra-controls .volume-slider {
+        width: 75px;
+    }
+}
+
+/* Respect the user's reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
