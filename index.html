@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +25,6 @@
 
     </header>
 
-
     <main>
 
         <section class="hero">
@@ -40,7 +40,6 @@
 
         </section>
 
-
         <section class="music-section">
 
             <div class="section-header">
@@ -48,10 +47,30 @@
                 <h2>Latest releases</h2>
             </div>
 
+            <section class="search-section" aria-label="Search music">
+
+                <label for="song-search">Find your music</label>
+
+                <input
+                    type="search"
+                    id="song-search"
+                    placeholder="Search songs or artists..."
+                    autocomplete="off"
+                >
+
+                <label for="search-filter">Search by</label>
+
+                <select id="search-filter">
+                    <option value="both">Artist and song name</option>
+                    <option value="artist">Artist</option>
+                    <option value="title">Song name</option>
+                </select>
+
+                <p id="search-count" aria-live="polite"></p>
+
+            </section>
 
             <div id="song-list">
-
-                <!-- Songs will be added here by JavaScript -->
 
                 <div class="empty-state">
                     <p>No music has been released yet.</p>
@@ -59,10 +78,18 @@
 
             </div>
 
+            <div
+                id="no-search-results"
+                class="empty-state"
+                role="status"
+                hidden
+            >
+                <p>No songs match your search. Try another name.</p>
+            </div>
+
         </section>
 
     </main>
-
 
     <footer>
 
@@ -76,7 +103,6 @@
         </div>
 
     </footer>
-
 
     <script src="js/songs.js"></script>
     <script src="js/player.js"></script>
