@@ -57,7 +57,7 @@ luna.studio.websites@gmail.com
 
 Luna Vibe is a branch of **LUNA Studios**.
 
-Oricade Studios and other partnered artists may contribute music to the platform.
+
 
 ## License
 
