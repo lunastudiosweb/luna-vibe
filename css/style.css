@@ -1200,3 +1200,10 @@ video {
         grid-column: 1 / -1;
     }
 }
+
+
+/* Fix: hide songs that don't match the search */
+.song-card[hidden] {
+    display: none !important;
+}
+
