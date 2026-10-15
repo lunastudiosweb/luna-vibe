@@ -128,8 +128,8 @@ const songs = [
     },
     {
         id: "song15",
-        title: "Song 15",
-        artist: "Unknown",
+        title: "locked in pneumonia",
+        artist: "Oricade",
         cover: "images/covers/song15.jpg",
         audio: "music/song15.mp3",
         description: "The fifteenth release.",
