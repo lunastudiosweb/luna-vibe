@@ -179,6 +179,275 @@ const songs = [
         audio: "music/song20.mp3",
         description: "The twentieth release.",
         releaseDate: "2026-10-26"
+    },
+    {
+        id: "song21",
+        title: "Song 21 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song21.jpg",
+        audio: "music/song21.mp3",
+        description: "The twenty-first release.",
+        releaseDate: "2026-10-27"
+    },
+    {
+        id: "song22",
+        title: "Song 22 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song22.jpg",
+        audio: "music/song22.mp3",
+        description: "The twenty-second release.",
+        releaseDate: "2026-10-28"
+    },
+    {
+        id: "song23",
+        title: "Song 23 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song23.jpg",
+        audio: "music/song23.mp3",
+        description: "The twenty-third release.",
+        releaseDate: "2026-10-29"
+    },
+    {
+        id: "song24",
+        title: "Song 24 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song24.jpg",
+        audio: "music/song24.mp3",
+        description: "The twenty-fourth release.",
+        releaseDate: "2026-10-30"
+    },
+    {
+        id: "song25",
+        title: "Song 25 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song25.jpg",
+        audio: "music/song25.mp3",
+        description: "The twenty-fifth release.",
+        releaseDate: "2026-10-31"
+    },
+    {
+        id: "song26",
+        title: "Song 26 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song26.jpg",
+        audio: "music/song26.mp3",
+        description: "The twenty-sixth release.",
+        releaseDate: "2026-11-01"
+    },
+    {
+        id: "song27",
+        title: "Song 27 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song27.jpg",
+        audio: "music/song27.mp3",
+        description: "The twenty-seventh release.",
+        releaseDate: "2026-11-02"
+    },
+    {
+        id: "song28",
+        title: "Song 28 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song28.jpg",
+        audio: "music/song28.mp3",
+        description: "The twenty-eighth release.",
+        releaseDate: "2026-11-03"
+    },
+    {
+        id: "song29",
+        title: "Song 29 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song29.jpg",
+        audio: "music/song29.mp3",
+        description: "The twenty-ninth release.",
+        releaseDate: "2026-11-04"
+    },
+    {
+        id: "song30",
+        title: "Song 30 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song30.jpg",
+        audio: "music/song30.mp3",
+        description: "The thirtieth release.",
+        releaseDate: "2026-11-05"
+    },
+    {
+        id: "song31",
+        title: "Song 31 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song31.jpg",
+        audio: "music/song31.mp3",
+        description: "The thirty-first release.",
+        releaseDate: "2026-11-06"
+    },
+    {
+        id: "song32",
+        title: "Song 32 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song32.jpg",
+        audio: "music/song32.mp3",
+        description: "The thirty-second release.",
+        releaseDate: "2026-11-07"
+    },
+    {
+        id: "song33",
+        title: "Song 33 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song33.jpg",
+        audio: "music/song33.mp3",
+        description: "The thirty-third release.",
+        releaseDate: "2026-11-08"
+    },
+    {
+        id: "song34",
+        title: "Song 34 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song34.jpg",
+        audio: "music/song34.mp3",
+        description: "The thirty-fourth release.",
+        releaseDate: "2026-11-09"
+    },
+    {
+        id: "song35",
+        title: "Song 35 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song35.jpg",
+        audio: "music/song35.mp3",
+        description: "The thirty-fifth release.",
+        releaseDate: "2026-11-10"
+    },
+    {
+        id: "song36",
+        title: "Song 36 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song36.jpg",
+        audio: "music/song36.mp3",
+        description: "The thirty-sixth release.",
+        releaseDate: "2026-11-11"
+    },
+    {
+        id: "song37",
+        title: "Song 37 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song37.jpg",
+        audio: "music/song37.mp3",
+        description: "The thirty-seventh release.",
+        releaseDate: "2026-11-12"
+    },
+    {
+        id: "song38",
+        title: "Song 38 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song38.jpg",
+        audio: "music/song38.mp3",
+        description: "The thirty-eighth release.",
+        releaseDate: "2026-11-13"
+    },
+    {
+        id: "song39",
+        title: "Song 39 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song39.jpg",
+        audio: "music/song39.mp3",
+        description: "The thirty-ninth release.",
+        releaseDate: "2026-11-14"
+    },
+    {
+        id: "song40",
+        title: "Song 40 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song40.jpg",
+        audio: "music/song40.mp3",
+        description: "The fortieth release.",
+        releaseDate: "2026-11-15"
+    },
+    {
+        id: "song41",
+        title: "Song 41 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song41.jpg",
+        audio: "music/song41.mp3",
+        description: "The forty-first release.",
+        releaseDate: "2026-11-16"
+    },
+    {
+        id: "song42",
+        title: "Song 42 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song42.jpg",
+        audio: "music/song42.mp3",
+        description: "The forty-second release.",
+        releaseDate: "2026-11-17"
+    },
+    {
+        id: "song43",
+        title: "Song 43 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song43.jpg",
+        audio: "music/song43.mp3",
+        description: "The forty-third release.",
+        releaseDate: "2026-11-18"
+    },
+    {
+        id: "song44",
+        title: "Song 44 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song44.jpg",
+        audio: "music/song44.mp3",
+        description: "The forty-fourth release.",
+        releaseDate: "2026-11-19"
+    },
+    {
+        id: "song45",
+        title: "Song 45 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song45.jpg",
+        audio: "music/song45.mp3",
+        description: "The forty-fifth release.",
+        releaseDate: "2026-11-20"
+    },
+    {
+        id: "song46",
+        title: "Song 46 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song46.jpg",
+        audio: "music/song46.mp3",
+        description: "The forty-sixth release.",
+        releaseDate: "2026-11-21"
+    },
+    {
+        id: "song47",
+        title: "Song 47 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song47.jpg",
+        audio: "music/song47.mp3",
+        description: "The forty-seventh release.",
+        releaseDate: "2026-11-22"
+    },
+    {
+        id: "song48",
+        title: "Song 48 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song48.jpg",
+        audio: "music/song48.mp3",
+        description: "The forty-eighth release.",
+        releaseDate: "2026-11-23"
+    },
+    {
+        id: "song49",
+        title: "Song 49 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song49.jpg",
+        audio: "music/song49.mp3",
+        description: "The forty-ninth release.",
+        releaseDate: "2026-11-24"
+    },
+    {
+        id: "song50",
+        title: "Song 50 - Coming Soon",
+        artist: "Unknown",
+        cover: "images/covers/song50.jpg",
+        audio: "music/song50.mp3",
+        description: "The fiftieth release.",
+        releaseDate: "2026-11-25"
     }
 ];
-
