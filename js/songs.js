@@ -155,8 +155,8 @@ const songs = [
     },
     {
         id: "song18",
-        title: "Song 18",
-        artist: "Unknown",
+        title: "Sleep Well",
+        artist: "CG5",
         cover: "images/covers/song18.jpg",
         audio: "music/song18.mp3",
         description: "The eighteenth release.",
