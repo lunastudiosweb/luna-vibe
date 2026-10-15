@@ -120,7 +120,7 @@ const songs = [
     {
         id: "song14",
         title: "I always wanted you",
-        artist: "Unknown",
+        artist: "Oricade",
         cover: "images/song14.jpg",
         audio: "music/song14.mp3",
         description: "The fourteenth release.",
