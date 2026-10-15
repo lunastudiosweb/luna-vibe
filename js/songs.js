@@ -146,8 +146,8 @@ const songs = [
     },
     {
         id: "song17",
-        title: "Song 17",
-        artist: "Unknown",
+        title: "RDX",
+        artist: "Oricade",
         cover: "images/covers/song17.jpg",
         audio: "music/song17.mp3",
         description: "The seventeenth release.",
