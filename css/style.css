@@ -1115,3 +1115,88 @@ video {
     }
 }
 
+
+
+/* =========================================
+   LUNA VIBE SEARCH
+   ========================================= */
+
+.search-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    max-width: 600px;
+    margin-bottom: 35px;
+}
+
+.search-section label {
+    color: var(--light-gray);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-top: 8px;
+}
+
+.search-section input,
+.search-section select {
+    width: 100%;
+    min-width: 0;
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 0;
+    background: var(--dark-gray);
+    color: var(--white);
+    font: inherit;
+    font-size: 14px;
+}
+
+.search-section input::placeholder {
+    color: var(--gray);
+}
+
+.search-section input:focus,
+.search-section select:focus {
+    outline: 2px solid var(--light-gray);
+    outline-offset: 3px;
+    border-color: var(--light-gray);
+}
+
+#search-count {
+    min-height: 18px;
+    color: var(--gray);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+#no-search-results[hidden] {
+    display: none;
+}
+
+#no-search-results {
+    margin-top: 10px;
+}
+
+@media (min-width: 600px) {
+    .search-section {
+        grid-template-columns: minmax(0, 1fr) 200px;
+        align-items: center;
+        column-gap: 14px;
+    }
+
+    .search-section label {
+        margin-top: 0;
+    }
+
+    .search-section label:first-child {
+        grid-column: 1 / -1;
+    }
+
+    #song-search {
+        grid-column: 1 / -1;
+    }
+
+    #search-count {
+        grid-column: 1 / -1;
+    }
+}
