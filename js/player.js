@@ -9,13 +9,23 @@ let currentlyPlayingAudio = null;
 
 /*
 ========================================
-SORT NEWEST FIRST
+FILTER PLACEHOLDER SONGS AND SORT
 ========================================
 */
 
-const sortedSongs = [...songs].sort((a, b) => {
-    return new Date(b.releaseDate) - new Date(a.releaseDate);
-});
+const sortedSongs = [...songs]
+    .filter(song => {
+        const number = song.id.replace("song", "");
+        const defaultTitle = `Song ${number} - Coming Soon`;
+
+        return !(
+            song.title.trim() === defaultTitle &&
+            song.artist.trim() === "Unknown"
+        );
+    })
+    .sort((a, b) => {
+        return new Date(b.releaseDate) - new Date(a.releaseDate);
+    });
 
 /*
 ========================================
@@ -212,7 +222,6 @@ function createSong(song, songIndex) {
 
             try {
                 await audio.play();
-
                 currentlyPlayingAudio = audio;
                 playButton.textContent = "Ⅱ";
             } catch (error) {
@@ -335,7 +344,6 @@ function createSong(song, songIndex) {
 
             try {
                 await audio.play();
-
                 currentlyPlayingAudio = audio;
                 playButton.textContent = "Ⅱ";
             } catch (error) {
@@ -355,11 +363,6 @@ function createSong(song, songIndex) {
             currentlyPlayingAudio = null;
         }
 
-        /*
-        Use the original sorted catalog, not the filtered
-        results, to find the next song.
-        */
-
         const nextIndex = songIndex + 1;
 
         if (nextIndex >= sortedSongs.length) return;
@@ -376,14 +379,16 @@ function createSong(song, songIndex) {
 
         if (!nextAudio) return;
 
-        if (currentlyPlayingAudio && currentlyPlayingAudio !== nextAudio) {
+        if (
+            currentlyPlayingAudio &&
+            currentlyPlayingAudio !== nextAudio
+        ) {
             currentlyPlayingAudio.pause();
             currentlyPlayingAudio.currentTime = 0;
         }
 
         try {
             await nextAudio.play();
-
             currentlyPlayingAudio = nextAudio;
 
             if (nextButton) {
@@ -432,11 +437,11 @@ function filterSongs() {
 
     let visibleCount = 0;
 
-    cards.forEach((card) => {
+    cards.forEach(card => {
         const title = card.dataset.songTitle;
         const artist = card.dataset.songArtist;
 
-        let matches = false;
+        let matches;
 
         if (!query) {
             matches = true;
@@ -460,12 +465,9 @@ function filterSongs() {
     noSearchResults.hidden =
         cards.length === 0 || visibleCount !== 0;
 
-    if (sortedSongs.length === 0) {
-        searchCount.textContent = "";
-    } else {
-        searchCount.textContent =
-            `Showing ${visibleCount} of ${cards.length} songs`;
-    }
+    searchCount.textContent = sortedSongs.length === 0
+        ? ""
+        : `Showing ${visibleCount} of ${cards.length} songs`;
 }
 
 searchInput.addEventListener("input", filterSongs);
@@ -477,6 +479,8 @@ LOAD SONGS
 ========================================
 */
 
+songList.innerHTML = "";
+
 if (sortedSongs.length === 0) {
     songList.innerHTML = `
         <div class="empty-state">
@@ -484,8 +488,6 @@ if (sortedSongs.length === 0) {
         </div>
     `;
 } else {
-    songList.innerHTML = "";
-
     sortedSongs.forEach((song, index) => {
         createSong(song, index);
     });
