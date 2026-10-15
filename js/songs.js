@@ -164,8 +164,8 @@ const songs = [
     },
     {
         id: "song19",
-        title: "Song 19",
-        artist: "Unknown",
+        title: "Lyin 2 me - Among us",
+        artist: "CG5",
         cover: "images/covers/song19.jpg",
         audio: "music/song19.mp3",
         description: "The nineteenth release.",
