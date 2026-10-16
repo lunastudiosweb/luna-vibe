@@ -182,8 +182,8 @@ const songs = [
     },
     {
         id: "song21",
-        title: "Song 21 - Coming Soon",
-        artist: "Unknown",
+        title: "Masquerade party"
+        artist: "CG5",
         cover: "images/covers/song21.jpg",
         audio: "music/song21.mp3",
         description: "The twenty-first release.",
