@@ -191,8 +191,8 @@ const songs = [
     },
     {
         id: "song22",
-        title: "Song 22 - Coming Soon",
-        artist: "Unknown",
+        title: "Not Supposed To Love Me",
+        artist: "CG5",
         cover: "images/covers/song22.jpg",
         audio: "music/song22.mp3",
         description: "The twenty-second release.",
