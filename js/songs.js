@@ -56,7 +56,7 @@ const songs = [
     },
     {
         id: "song7",
-        title: "forgettable smile ",
+        title: "forgettable smile",
         artist: "Oricade",
         cover: "images/covers/song7.jpg",
         audio: "music/song7.mp3",
@@ -121,7 +121,7 @@ const songs = [
         id: "song14",
         title: "I always wanted you",
         artist: "Oricade",
-        cover: "images/song14.jpg",
+        cover: "images/covers/song14.jpg",
         audio: "music/song14.mp3",
         description: "The fourteenth release.",
         releaseDate: "2026-10-20"
@@ -182,7 +182,7 @@ const songs = [
     },
     {
         id: "song21",
-        title: "Masquerade party"
+        title: "Masquerade party",
         artist: "CG5",
         cover: "images/covers/song21.jpg",
         audio: "music/song21.mp3",
