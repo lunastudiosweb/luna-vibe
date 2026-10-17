@@ -1211,12 +1211,13 @@ video {
 
 
 
+
 /* =========================================
-   LUNA VIBE — FLOATING MINI PLAYER
+   LUNA VIBE — PREMIUM MINI PLAYER
    ========================================= */
 
 body {
-    padding-bottom: 100px;
+    padding-bottom: 112px;
 }
 
 .mini-player[hidden] {
@@ -1226,156 +1227,271 @@ body {
 .mini-player {
     position: fixed;
     z-index: 9999;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: auto 0 0;
 
     display: grid;
-    grid-template-columns: 52px minmax(100px, 1fr) 42px 42px;
+    grid-template-columns: 56px minmax(120px, 1fr) 44px 44px minmax(180px, 1.4fr) 40px;
     align-items: center;
-    gap: 12px;
+    gap: 18px;
 
-    padding: 14px 5%;
-    background: #0d0d0d;
-    border-top: 1px solid #383838;
-    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.45);
+    min-height: 100px;
+    padding: 16px 4%;
 
-    color: #ffffff;
+    background: rgba(10, 10, 10, 0.97);
+    border-top: 1px solid #303030;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.35);
+
+    color: #fff;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    animation: mini-player-enter 0.25s ease-out;
 }
+
+@keyframes mini-player-enter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Album artwork */
 
 .mini-cover {
-    width: 52px;
-    height: 52px;
+    display: block;
+    width: 56px;
+    height: 56px;
+
     object-fit: cover;
-    background: #242424;
+    border-radius: 5px;
+    background: #191919;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
 }
 
+/* Track information */
+
 .mini-song-info {
-    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    justify-content: center;
+    gap: 5px;
+
+    min-width: 0;
 }
 
 .mini-title,
 .mini-artist {
+    display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .mini-title {
-    color: #ffffff;
+    color: #f7f7f7;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
+    letter-spacing: -0.02em;
 }
 
 .mini-artist {
-    color: #8a8a8a;
+    color: #929292;
     font-size: 12px;
 }
 
-.mini-control {
-    width: 42px;
-    height: 42px;
+/* Player buttons */
 
+.mini-control {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 
-    border: 1px solid #444444;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+
+    border: 1px solid #353535;
+    border-radius: 50%;
+
     background: transparent;
-    color: #ffffff;
+    color: #d8d8d8;
 
-    font-size: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    line-height: 1;
+
     cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
+
+    transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease;
 }
 
 .mini-control:hover {
-    background: #ffffff;
+    border-color: #fff;
+    background: #fff;
     color: #050505;
+    transform: scale(1.04);
 }
 
-.mini-control:focus-visible,
-.mini-progress:focus-visible {
-    outline: 2px solid #ffffff;
-    outline-offset: 3px;
+.mini-control:active {
+    transform: scale(0.96);
 }
 
-.mini-progress-container {
-    grid-column: 2 / 4;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
+/* Highlight the primary play/pause button */
+
+#mini-play {
+    border-color: #fff;
+    background: #fff;
+    color: #050505;
+    font-size: 16px;
 }
 
-.mini-progress {
-    flex: 1;
-    width: 100%;
-    min-width: 0;
-    height: 4px;
-    accent-color: #ffffff;
-    cursor: pointer;
+#mini-play:hover {
+    border-color: #d8d8d8;
+    background: #d8d8d8;
 }
 
-.mini-time {
-    color: #8a8a8a;
-    font-size: 11px;
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
+/* Stop and close */
+
+#mini-stop {
+    color: #bdbdbd;
+    font-size: 12px;
 }
 
 .mini-close {
-    grid-column: 4;
-    grid-row: 1;
+    width: 36px;
+    height: 36px;
+
+    border-color: transparent;
+    color: #888;
+
     font-size: 23px;
+    font-weight: 300;
 }
 
-/* Desktop layout */
-@media (min-width: 701px) {
-    .mini-player {
-        grid-template-columns: 52px minmax(140px, 1fr) 42px 42px
-                               minmax(180px, 1.5fr) 42px;
-        gap: 16px;
-        padding: 14px 4%;
-    }
-
-    .mini-progress-container {
-        grid-column: auto;
-        grid-row: 1;
-    }
-
-    .mini-close {
-        grid-column: auto;
-        grid-row: 1;
-    }
+.mini-close:hover {
+    border-color: #333;
+    background: #202020;
+    color: #fff;
 }
 
-/* Mobile layout */
-@media (max-width: 700px) {
-    body {
-        padding-bottom: 125px;
-    }
+/* Progress and timestamps */
 
+.mini-progress-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    min-width: 0;
+    width: 100%;
+}
+
+.mini-time {
+    min-width: 32px;
+
+    color: #929292;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.mini-time:last-child {
+    text-align: right;
+}
+
+/* Custom progress slider */
+
+.mini-progress {
+    appearance: none;
+    -webkit-appearance: none;
+
+    display: block;
+    flex: 1;
+
+    width: 100%;
+    min-width: 0;
+    height: 4px;
+    margin: 0;
+
+    border: none;
+    border-radius: 10px;
+    outline: none;
+
+    background: #383838;
+    accent-color: #fff;
+
+    cursor: pointer;
+}
+
+.mini-progress::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 10px;
+    height: 10px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+
+    transition: transform 0.15s ease;
+}
+
+.mini-progress::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+
+    transition: transform 0.15s ease;
+}
+
+.mini-progress:hover::-webkit-slider-thumb {
+    transform: scale(1.25);
+}
+
+.mini-progress:hover::-moz-range-thumb {
+    transform: scale(1.25);
+}
+
+/* Keyboard accessibility */
+
+.mini-control:focus-visible,
+.mini-progress:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+}
+
+/* =========================================
+   TABLETS
+   ========================================= */
+
+@media (min-width: 701px) and (max-width: 1050px) {
     .mini-player {
-        grid-template-columns: 44px minmax(0, 1fr) 38px 38px;
-        gap: 9px;
-        padding: 12px 4%;
+        grid-template-columns: 48px minmax(100px, 1fr) 40px 40px minmax(120px, 1.2fr) 34px;
+        gap: 12px;
+        padding: 14px 3%;
     }
 
     .mini-cover {
-        width: 44px;
-        height: 44px;
-    }
-
-    .mini-title {
-        font-size: 12px;
-    }
-
-    .mini-artist {
-        font-size: 11px;
+        width: 48px;
+        height: 48px;
     }
 
     .mini-control {
@@ -1383,18 +1499,172 @@ body {
         height: 38px;
     }
 
-    .mini-progress-container {
-        grid-column: 1 / 5;
-        grid-row: 2;
-        gap: 8px;
+    .mini-close {
+        width: 32px;
+        height: 32px;
     }
 
-    .mini-close {
+    .mini-progress-container {
+        gap: 8px;
+    }
+}
+
+/* =========================================
+   MOBILE MINI PLAYER
+   ========================================= */
+
+@media (max-width: 700px) {
+    body {
+        padding-bottom: 116px;
+    }
+
+    .mini-player {
+        grid-template-columns: 44px minmax(0, 1fr) 38px 38px 32px;
+        grid-template-rows: auto auto;
+
+        gap: 12px 9px;
+
+        min-height: 112px;
+        padding: 13px 4% 14px;
+    }
+
+    .mini-cover {
+        grid-column: 1;
+        grid-row: 1;
+
+        width: 44px;
+        height: 44px;
+
+        border-radius: 4px;
+    }
+
+    .mini-song-info {
+        grid-column: 2;
+        grid-row: 1;
+        gap: 4px;
+    }
+
+    .mini-title {
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    .mini-artist {
+        font-size: 11px;
+    }
+
+    .mini-control {
+        width: 36px;
+        height: 36px;
+        justify-self: center;
+    }
+
+    #mini-play {
+        grid-column: 3;
+        grid-row: 1;
+    }
+
+    #mini-stop {
         grid-column: 4;
         grid-row: 1;
     }
 
+    .mini-close {
+        grid-column: 5;
+        grid-row: 1;
+
+        width: 30px;
+        height: 30px;
+
+        font-size: 21px;
+    }
+
+    .mini-progress-container {
+        grid-column: 1 / -1;
+        grid-row: 2;
+
+        gap: 10px;
+        padding: 0 1px;
+    }
+
     .mini-time {
+        min-width: 30px;
         font-size: 10px;
+    }
+
+    .mini-progress {
+        height: 4px;
+        padding: 5px 0;
+        background-clip: content-box;
+    }
+
+    .mini-progress::-webkit-slider-thumb {
+        width: 12px;
+        height: 12px;
+    }
+
+    .mini-progress::-moz-range-thumb {
+        width: 12px;
+        height: 12px;
+    }
+}
+
+/* =========================================
+   VERY SMALL PHONES
+   ========================================= */
+
+@media (max-width: 380px) {
+    .mini-player {
+        grid-template-columns: 38px minmax(0, 1fr) 34px 34px 27px;
+        gap: 10px 6px;
+        padding: 12px 3%;
+    }
+
+    .mini-cover {
+        width: 38px;
+        height: 38px;
+    }
+
+    .mini-control {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+
+    .mini-close {
+        width: 27px;
+        height: 27px;
+        font-size: 19px;
+    }
+
+    .mini-title {
+        font-size: 11px;
+    }
+
+    .mini-artist {
+        font-size: 10px;
+    }
+
+    .mini-progress-container {
+        gap: 7px;
+    }
+
+    .mini-time {
+        min-width: 27px;
+        font-size: 9px;
+    }
+}
+
+/* Respect reduced-motion preferences */
+
+@media (prefers-reduced-motion: reduce) {
+    .mini-player {
+        animation: none;
+    }
+
+    .mini-control,
+    .mini-progress::-webkit-slider-thumb,
+    .mini-progress::-moz-range-thumb {
+        transition: none;
     }
 }
