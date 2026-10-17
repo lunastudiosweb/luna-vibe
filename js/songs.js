@@ -194,7 +194,7 @@ const songs = [
         title: "Not Supposed To Love Me",
         artist: "CG5",
         cover: "images/covers/song22.jpg",
-        audio: "music/song22.mp3",
+        audio: "music/song22fix.mp3",
         description: "The twenty-second release.",
         releaseDate: "2026-10-28"
     },
