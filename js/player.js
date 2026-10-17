@@ -6,6 +6,170 @@ const searchCount = document.getElementById("search-count");
 const noSearchResults = document.getElementById("no-search-results");
 
 let currentlyPlayingAudio = null;
+let pendingAudio = null;
+let playbackRequestId = 0;
+
+/*
+========================================
+SAFE PLAYBACK SYSTEM
+ALWAYS START SONGS AT 0:00
+========================================
+*/
+
+function waitForAudioMetadata(audio) {
+    if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) {
+        return Promise.resolve();
+    }
+
+    return new Promise((resolve, reject) => {
+        let timeoutId;
+
+        const cleanup = () => {
+            audio.removeEventListener("loadedmetadata", onLoaded);
+            audio.removeEventListener("error", onError);
+            clearTimeout(timeoutId);
+        };
+
+        const onLoaded = () => {
+            cleanup();
+            resolve();
+        };
+
+        const onError = () => {
+            cleanup();
+            reject(new Error("Could not load audio metadata."));
+        };
+
+        audio.addEventListener("loadedmetadata", onLoaded, { once: true });
+        audio.addEventListener("error", onError, { once: true });
+
+        timeoutId = setTimeout(() => {
+            cleanup();
+            reject(new Error("Audio metadata loading timed out."));
+        }, 15000);
+
+        audio.load();
+    });
+}
+
+function resetAudioToBeginning(audio) {
+    return new Promise((resolve, reject) => {
+        if (audio.readyState < HTMLMediaElement.HAVE_METADATA) {
+            reject(new Error("Audio metadata is not ready."));
+            return;
+        }
+
+        if (audio.currentTime === 0 && !audio.seeking) {
+            resolve();
+            return;
+        }
+
+        let timeoutId;
+
+        const cleanup = () => {
+            audio.removeEventListener("seeked", onSeeked);
+            audio.removeEventListener("error", onError);
+            clearTimeout(timeoutId);
+        };
+
+        const onSeeked = () => {
+            if (Math.abs(audio.currentTime) <= 0.05 && !audio.seeking) {
+                cleanup();
+                resolve();
+            } else {
+                cleanup();
+                reject(new Error("Audio did not reset to 0:00."));
+            }
+        };
+
+        const onError = () => {
+            cleanup();
+            reject(new Error("Audio failed during reset."));
+        };
+
+        audio.addEventListener("seeked", onSeeked, { once: true });
+        audio.addEventListener("error", onError, { once: true });
+
+        timeoutId = setTimeout(() => {
+            cleanup();
+            reject(new Error("Audio reset timed out."));
+        }, 7000);
+
+        try {
+            audio.currentTime = 0;
+
+            if (audio.currentTime === 0 && !audio.seeking) {
+                cleanup();
+                resolve();
+            }
+        } catch (error) {
+            cleanup();
+            reject(error);
+        }
+    });
+}
+
+async function playAudioFromBeginning(audio) {
+    const requestId = ++playbackRequestId;
+
+    try {
+        if (currentlyPlayingAudio && currentlyPlayingAudio !== audio) {
+            currentlyPlayingAudio.pause();
+            currentlyPlayingAudio.currentTime = 0;
+
+            const oldButton = currentlyPlayingAudio
+                .closest(".song-card")
+                ?.querySelector(".play-button");
+
+            if (oldButton) oldButton.textContent = "▶";
+        }
+
+        if (pendingAudio && pendingAudio !== audio) {
+            pendingAudio.pause();
+        }
+
+        audio.pause();
+        pendingAudio = audio;
+
+        await waitForAudioMetadata(audio);
+
+        if (requestId !== playbackRequestId) return false;
+
+        await resetAudioToBeginning(audio);
+
+        if (requestId !== playbackRequestId) return false;
+
+        if (Math.abs(audio.currentTime) > 0.05 || audio.seeking) {
+            throw new Error("Playback blocked: starting position is not 0:00.");
+        }
+
+        await audio.play();
+
+        if (requestId !== playbackRequestId) {
+            audio.pause();
+            audio.currentTime = 0;
+            return false;
+        }
+
+        currentlyPlayingAudio = audio;
+        return true;
+
+    } catch (error) {
+        console.error("Luna Vibe playback safety check failed:", error);
+
+        audio.pause();
+
+        const button = audio.closest(".song-card")
+            ?.querySelector(".play-button");
+
+        if (button) button.textContent = "▶";
+
+        return false;
+
+    } finally {
+        if (pendingAudio === audio) pendingAudio = null;
+    }
+}
 
 /*
 ========================================
@@ -34,9 +198,7 @@ FORMAT TIME
 */
 
 function formatTime(seconds) {
-    if (!Number.isFinite(seconds)) {
-        return "0:00";
-    }
+    if (!Number.isFinite(seconds)) return "0:00";
 
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60)
@@ -93,90 +255,52 @@ function createSong(song, songIndex) {
 
     songCard.innerHTML = `
         <div class="song-info">
-            <a
-                class="song-link"
-                href="song.html?song=${encodeURIComponent(song.id)}"
-            >
-                <img
-                    class="song-cover"
-                    src="${song.cover}"
-                    alt="${song.title} cover"
-                >
+            <a class="song-link"
+               href="song.html?song=${encodeURIComponent(song.id)}">
+                <img class="song-cover"
+                     src="${song.cover}"
+                     alt="${song.title} cover">
             </a>
 
             <div class="song-details">
-                <a
-                    class="song-title-link"
-                    href="song.html?song=${encodeURIComponent(song.id)}"
-                >
-                    <h3>
-                        ${song.title}
-                        ${releaseLabel}
-                    </h3>
+                <a class="song-title-link"
+                   href="song.html?song=${encodeURIComponent(song.id)}">
+                    <h3>${song.title} ${releaseLabel}</h3>
                 </a>
 
                 <p>${song.artist}</p>
-
-                <span class="release-date">
-                    ${releaseDate}
-                </span>
+                <span class="release-date">${releaseDate}</span>
             </div>
         </div>
 
         <div class="music-player">
-            <button
-                class="play-button"
-                aria-label="Play ${song.title}"
-            >
-                ▶
-            </button>
+            <button class="play-button" aria-label="Play ${song.title}">▶</button>
 
-            <button
-                class="loop-button"
-                aria-label="Loop ${song.title}"
-                aria-pressed="false"
-            >
-                LOOP
-            </button>
+            <button class="loop-button"
+                    aria-label="Loop ${song.title}"
+                    aria-pressed="false">LOOP</button>
 
             <div class="volume-control">
-                <button
-                    class="volume-button"
-                    aria-label="Mute ${song.title}"
-                    aria-pressed="false"
-                >
-                    VOL
-                </button>
+                <button class="volume-button"
+                        aria-label="Mute ${song.title}"
+                        aria-pressed="false">VOL</button>
 
-                <input
-                    type="range"
-                    class="volume-slider"
-                    min="0"
-                    max="100"
-                    value="100"
-                    aria-label="Volume for ${song.title}"
-                >
+                <input type="range"
+                       class="volume-slider"
+                       min="0" max="100" value="100"
+                       aria-label="Volume for ${song.title}">
             </div>
 
             <div class="player-content">
                 <div class="player-top">
-                    <span class="player-title">
-                        ${song.title}
-                    </span>
-
-                    <span class="player-time">
-                        0:00 / 0:00
-                    </span>
+                    <span class="player-title">${song.title}</span>
+                    <span class="player-time">0:00 / 0:00</span>
                 </div>
 
-                <input
-                    type="range"
-                    class="progress-bar"
-                    value="0"
-                    min="0"
-                    max="100"
-                    aria-label="Seek through ${song.title}"
-                >
+                <input type="range"
+                       class="progress-bar"
+                       value="0" min="0" max="100"
+                       aria-label="Seek through ${song.title}">
             </div>
 
             <audio preload="metadata">
@@ -201,36 +325,27 @@ function createSong(song, songIndex) {
     */
 
     playButton.addEventListener("click", async () => {
-        if (audio.paused) {
-            if (
-                currentlyPlayingAudio &&
-                currentlyPlayingAudio !== audio
-            ) {
-                currentlyPlayingAudio.pause();
-                currentlyPlayingAudio.currentTime = 0;
+        if (!audio.paused || pendingAudio === audio) {
+            playbackRequestId++;
 
-                const oldCard =
-                    currentlyPlayingAudio.closest(".song-card");
-
-                const oldButton =
-                    oldCard?.querySelector(".play-button");
-
-                if (oldButton) {
-                    oldButton.textContent = "▶";
-                }
-            }
-
-            try {
-                await audio.play();
-                currentlyPlayingAudio = audio;
-                playButton.textContent = "Ⅱ";
-            } catch (error) {
-                console.error("Unable to play audio:", error);
-                playButton.textContent = "▶";
-            }
-        } else {
             audio.pause();
             playButton.textContent = "▶";
+
+            if (currentlyPlayingAudio === audio) {
+                currentlyPlayingAudio = null;
+            }
+
+            if (pendingAudio === audio) {
+                pendingAudio = null;
+            }
+
+            return;
+        }
+
+        const started = await playAudioFromBeginning(audio);
+
+        if (started) {
+            playButton.textContent = "Ⅱ";
         }
     });
 
@@ -269,10 +384,7 @@ function createSong(song, songIndex) {
 
         volumeButton.textContent = muted ? "MUTED" : "VOL";
 
-        volumeButton.setAttribute(
-            "aria-pressed",
-            String(muted)
-        );
+        volumeButton.setAttribute("aria-pressed", String(muted));
 
         volumeButton.setAttribute(
             "aria-label",
@@ -292,11 +404,7 @@ function createSong(song, songIndex) {
     loopButton.addEventListener("click", () => {
         loopEnabled = !loopEnabled;
 
-        loopButton.setAttribute(
-            "aria-pressed",
-            String(loopEnabled)
-        );
-
+        loopButton.setAttribute("aria-pressed", String(loopEnabled));
         loopButton.textContent = loopEnabled ? "LOOP ON" : "LOOP";
     });
 
@@ -316,8 +424,7 @@ function createSong(song, songIndex) {
     audio.addEventListener("timeupdate", () => {
         if (!audio.duration) return;
 
-        progressBar.value =
-            (audio.currentTime / audio.duration) * 100;
+        progressBar.value = (audio.currentTime / audio.duration) * 100;
 
         timeDisplay.textContent =
             `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
@@ -340,16 +447,8 @@ function createSong(song, songIndex) {
 
     audio.addEventListener("ended", async () => {
         if (loopEnabled) {
-            audio.currentTime = 0;
-
-            try {
-                await audio.play();
-                currentlyPlayingAudio = audio;
-                playButton.textContent = "Ⅱ";
-            } catch (error) {
-                console.error("Unable to replay audio:", error);
-            }
-
+            const restarted = await playAudioFromBeginning(audio);
+            playButton.textContent = restarted ? "Ⅱ" : "▶";
             return;
         }
 
@@ -367,9 +466,7 @@ function createSong(song, songIndex) {
 
         if (nextIndex >= sortedSongs.length) return;
 
-        const allSongCards =
-            songList.querySelectorAll(".song-card");
-
+        const allSongCards = songList.querySelectorAll(".song-card");
         const nextSongCard = allSongCards[nextIndex];
 
         if (!nextSongCard) return;
@@ -379,27 +476,10 @@ function createSong(song, songIndex) {
 
         if (!nextAudio) return;
 
-        if (
-            currentlyPlayingAudio &&
-            currentlyPlayingAudio !== nextAudio
-        ) {
-            currentlyPlayingAudio.pause();
-            currentlyPlayingAudio.currentTime = 0;
-        }
+        const started = await playAudioFromBeginning(nextAudio);
 
-        try {
-            await nextAudio.play();
-            currentlyPlayingAudio = nextAudio;
-
-            if (nextButton) {
-                nextButton.textContent = "Ⅱ";
-            }
-        } catch (error) {
-            console.error("Unable to play next song:", error);
-
-            if (nextButton) {
-                nextButton.textContent = "▶";
-            }
+        if (nextButton) {
+            nextButton.textContent = started ? "Ⅱ" : "▶";
         }
     });
 
@@ -450,20 +530,15 @@ function filterSongs() {
         } else if (filter === "title") {
             matches = title.includes(query);
         } else {
-            matches =
-                title.includes(query) ||
-                artist.includes(query);
+            matches = title.includes(query) || artist.includes(query);
         }
 
         card.hidden = !matches;
 
-        if (matches) {
-            visibleCount++;
-        }
+        if (matches) visibleCount++;
     });
 
-    noSearchResults.hidden =
-        cards.length === 0 || visibleCount !== 0;
+    noSearchResults.hidden = cards.length === 0 || visibleCount !== 0;
 
     searchCount.textContent = sortedSongs.length === 0
         ? ""
