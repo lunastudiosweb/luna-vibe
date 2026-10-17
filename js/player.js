@@ -5,14 +5,106 @@ const searchFilter = document.getElementById("search-filter");
 const searchCount = document.getElementById("search-count");
 const noSearchResults = document.getElementById("no-search-results");
 
+/*
+========================================
+MINI PLAYER ELEMENTS
+========================================
+*/
+
+const miniPlayer = document.getElementById("mini-player");
+const miniCover = document.getElementById("mini-cover");
+const miniTitle = document.getElementById("mini-title");
+const miniArtist = document.getElementById("mini-artist");
+const miniPlay = document.getElementById("mini-play");
+const miniStop = document.getElementById("mini-stop");
+const miniClose = document.getElementById("mini-close");
+const miniProgress = document.getElementById("mini-progress");
+const miniCurrentTime = document.getElementById("mini-current-time");
+const miniDuration = document.getElementById("mini-duration");
+
 let currentlyPlayingAudio = null;
 let pendingAudio = null;
 let playbackRequestId = 0;
+let miniAudio = null;
+let miniDismissed = false;
 
 /*
 ========================================
-SAFE PLAYBACK SYSTEM
-ALWAYS START SONGS AT 0:00
+TIME FORMATTING
+========================================
+*/
+
+function formatTime(seconds) {
+    if (!Number.isFinite(seconds) || seconds < 0) {
+        return "0:00";
+    }
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60)
+        .toString()
+        .padStart(2, "0");
+
+    return `${minutes}:${remainingSeconds}`;
+}
+
+/*
+========================================
+MINI PLAYER DISPLAY
+========================================
+*/
+
+function showMiniPlayer(audio) {
+    const card = audio.closest(".song-card");
+
+    if (!card || !miniPlayer) return;
+
+    miniAudio = audio;
+    miniDismissed = false;
+
+    const cover = card.querySelector(".song-cover");
+    const title = card.querySelector(".song-title-link h3");
+    const artist = card.querySelector(".song-details p");
+
+    miniCover.src = cover ? cover.src : "";
+    miniCover.alt = cover ? cover.alt : "";
+    miniTitle.textContent = title
+        ? title.textContent.replace(/\s*NEW\s*$/, "").trim()
+        : "Unknown song";
+    miniArtist.textContent = artist ? artist.textContent : "";
+
+    miniPlayer.hidden = false;
+
+    updateMiniPlayer();
+}
+
+function updateMiniPlayer() {
+    if (!miniAudio) return;
+
+    const audio = miniAudio;
+
+    miniPlay.textContent = audio.paused ? "▶" : "Ⅱ";
+    miniPlay.setAttribute(
+        "aria-label",
+        audio.paused ? "Play song" : "Pause song"
+    );
+
+    miniCurrentTime.textContent = formatTime(audio.currentTime);
+    miniDuration.textContent = formatTime(audio.duration);
+
+    if (
+        Number.isFinite(audio.duration) &&
+        audio.duration > 0
+    ) {
+        miniProgress.value =
+            (audio.currentTime / audio.duration) * 100;
+    } else {
+        miniProgress.value = 0;
+    }
+}
+
+/*
+========================================
+SAFE AUDIO METADATA LOADING
 ========================================
 */
 
@@ -40,8 +132,8 @@ function waitForAudioMetadata(audio) {
             reject(new Error("Could not load audio metadata."));
         };
 
-        audio.addEventListener("loadedmetadata", onLoaded, { once: true });
-        audio.addEventListener("error", onError, { once: true });
+        audio.addEventListener("loadedmetadata", onLoaded);
+        audio.addEventListener("error", onError);
 
         timeoutId = setTimeout(() => {
             cleanup();
@@ -51,6 +143,12 @@ function waitForAudioMetadata(audio) {
         audio.load();
     });
 }
+
+/*
+========================================
+RESET AUDIO AND VERIFY 0:00
+========================================
+*/
 
 function resetAudioToBeginning(audio) {
     return new Promise((resolve, reject) => {
@@ -87,8 +185,8 @@ function resetAudioToBeginning(audio) {
             reject(new Error("Audio failed during reset."));
         };
 
-        audio.addEventListener("seeked", onSeeked, { once: true });
-        audio.addEventListener("error", onError, { once: true });
+        audio.addEventListener("seeked", onSeeked);
+        audio.addEventListener("error", onError);
 
         timeoutId = setTimeout(() => {
             cleanup();
@@ -109,15 +207,25 @@ function resetAudioToBeginning(audio) {
     });
 }
 
+/*
+========================================
+SAFE PLAY FROM 0:00
+========================================
+*/
+
 async function playAudioFromBeginning(audio) {
     const requestId = ++playbackRequestId;
 
     try {
         if (currentlyPlayingAudio && currentlyPlayingAudio !== audio) {
-            currentlyPlayingAudio.pause();
-            currentlyPlayingAudio.currentTime = 0;
+            const oldAudio = currentlyPlayingAudio;
+            oldAudio.pause();
 
-            const oldButton = currentlyPlayingAudio
+            if (oldAudio.readyState >= HTMLMediaElement.HAVE_METADATA) {
+                oldAudio.currentTime = 0;
+            }
+
+            const oldButton = oldAudio
                 .closest(".song-card")
                 ?.querySelector(".play-button");
 
@@ -140,18 +248,24 @@ async function playAudioFromBeginning(audio) {
         if (requestId !== playbackRequestId) return false;
 
         if (Math.abs(audio.currentTime) > 0.05 || audio.seeking) {
-            throw new Error("Playback blocked: starting position is not 0:00.");
+            throw new Error("Playback blocked: audio is not at 0:00.");
         }
 
         await audio.play();
 
         if (requestId !== playbackRequestId) {
             audio.pause();
-            audio.currentTime = 0;
+
+            if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) {
+                audio.currentTime = 0;
+            }
+
             return false;
         }
 
         currentlyPlayingAudio = audio;
+        showMiniPlayer(audio);
+
         return true;
 
     } catch (error) {
@@ -167,9 +281,144 @@ async function playAudioFromBeginning(audio) {
         return false;
 
     } finally {
-        if (pendingAudio === audio) pendingAudio = null;
+        if (pendingAudio === audio) {
+            pendingAudio = null;
+        }
     }
 }
+
+/*
+========================================
+MINI PLAYER PLAY / PAUSE
+========================================
+*/
+
+miniPlay.addEventListener("click", async () => {
+    if (!miniAudio) return;
+
+    const audio = miniAudio;
+
+    if (!audio.paused) {
+        audio.pause();
+        updateMiniPlayer();
+        return;
+    }
+
+    // If stopped or finished, start safely from 0:00.
+    if (audio.ended || audio.currentTime === 0) {
+        await playAudioFromBeginning(audio);
+        updateMiniPlayer();
+        return;
+    }
+
+    // Resume this song from its current position.
+    const requestId = ++playbackRequestId;
+
+    try {
+        if (currentlyPlayingAudio && currentlyPlayingAudio !== audio) {
+            currentlyPlayingAudio.pause();
+        }
+
+        if (pendingAudio && pendingAudio !== audio) {
+            pendingAudio.pause();
+        }
+
+        pendingAudio = audio;
+
+        await waitForAudioMetadata(audio);
+
+        if (requestId !== playbackRequestId) return;
+
+        await audio.play();
+
+        if (requestId !== playbackRequestId) {
+            audio.pause();
+            return;
+        }
+
+        currentlyPlayingAudio = audio;
+        showMiniPlayer(audio);
+
+    } catch (error) {
+        console.error("Could not resume Luna Vibe song:", error);
+    } finally {
+        if (pendingAudio === audio) {
+            pendingAudio = null;
+        }
+
+        updateMiniPlayer();
+    }
+});
+
+/*
+========================================
+MINI PLAYER STOP
+========================================
+*/
+
+miniStop.addEventListener("click", () => {
+    if (!miniAudio) return;
+
+    const audio = miniAudio;
+
+    // Cancel any playback request still in progress.
+    playbackRequestId++;
+
+    if (pendingAudio === audio) {
+        pendingAudio = null;
+    }
+
+    audio.pause();
+
+    if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) {
+        try {
+            audio.currentTime = 0;
+        } catch (error) {
+            console.error("Could not reset song:", error);
+        }
+    }
+
+    if (currentlyPlayingAudio === audio) {
+        currentlyPlayingAudio = null;
+    }
+
+    const button = audio.closest(".song-card")
+        ?.querySelector(".play-button");
+
+    if (button) button.textContent = "▶";
+
+    updateMiniPlayer();
+});
+
+/*
+========================================
+MINI PLAYER CLOSE
+========================================
+*/
+
+miniClose.addEventListener("click", () => {
+    miniDismissed = true;
+    miniPlayer.hidden = true;
+});
+
+/*
+========================================
+MINI PLAYER SEEK BAR
+========================================
+*/
+
+miniProgress.addEventListener("input", () => {
+    if (!miniAudio || !Number.isFinite(miniAudio.duration)) {
+        return;
+    }
+
+    if (miniAudio.duration <= 0) return;
+
+    miniAudio.currentTime =
+        (Number(miniProgress.value) / 100) * miniAudio.duration;
+
+    updateMiniPlayer();
+});
 
 /*
 ========================================
@@ -190,23 +439,6 @@ const sortedSongs = [...songs]
     .sort((a, b) => {
         return new Date(b.releaseDate) - new Date(a.releaseDate);
     });
-
-/*
-========================================
-FORMAT TIME
-========================================
-*/
-
-function formatTime(seconds) {
-    if (!Number.isFinite(seconds)) return "0:00";
-
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = Math.floor(seconds % 60)
-        .toString()
-        .padStart(2, "0");
-
-    return `${minutes}:${remainingSeconds}`;
-}
 
 /*
 ========================================
@@ -274,14 +506,18 @@ function createSong(song, songIndex) {
         </div>
 
         <div class="music-player">
-            <button class="play-button" aria-label="Play ${song.title}">▶</button>
+            <button class="play-button"
+                    type="button"
+                    aria-label="Play ${song.title}">▶</button>
 
             <button class="loop-button"
+                    type="button"
                     aria-label="Loop ${song.title}"
                     aria-pressed="false">LOOP</button>
 
             <div class="volume-control">
                 <button class="volume-button"
+                        type="button"
                         aria-label="Mute ${song.title}"
                         aria-pressed="false">VOL</button>
 
@@ -329,6 +565,7 @@ function createSong(song, songIndex) {
             playbackRequestId++;
 
             audio.pause();
+
             playButton.textContent = "▶";
 
             if (currentlyPlayingAudio === audio) {
@@ -339,18 +576,17 @@ function createSong(song, songIndex) {
                 pendingAudio = null;
             }
 
+            updateMiniPlayer();
             return;
         }
 
         const started = await playAudioFromBeginning(audio);
 
-        if (started) {
-            playButton.textContent = "Ⅱ";
-        }
+        playButton.textContent = started ? "Ⅱ" : "▶";
     });
 
     /*
-    VOLUME SLIDER
+    VOLUME
     */
 
     volumeSlider.addEventListener("input", () => {
@@ -362,10 +598,6 @@ function createSong(song, songIndex) {
 
         updateVolumeButton();
     });
-
-    /*
-    MUTE / UNMUTE
-    */
 
     volumeButton.addEventListener("click", () => {
         if (audio.volume > 0) {
@@ -383,7 +615,6 @@ function createSong(song, songIndex) {
         const muted = audio.volume === 0;
 
         volumeButton.textContent = muted ? "MUTED" : "VOL";
-
         volumeButton.setAttribute("aria-pressed", String(muted));
 
         volumeButton.setAttribute(
@@ -415,23 +646,32 @@ function createSong(song, songIndex) {
     audio.addEventListener("loadedmetadata", () => {
         timeDisplay.textContent =
             `0:00 / ${formatTime(audio.duration)}`;
+
+        if (miniAudio === audio) {
+            updateMiniPlayer();
+        }
     });
 
     /*
-    PROGRESS AND TIME
+    TIME AND PROGRESS
     */
 
     audio.addEventListener("timeupdate", () => {
-        if (!audio.duration) return;
+        if (audio.duration > 0) {
+            progressBar.value =
+                (audio.currentTime / audio.duration) * 100;
 
-        progressBar.value = (audio.currentTime / audio.duration) * 100;
+            timeDisplay.textContent =
+                `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+        }
 
-        timeDisplay.textContent =
-            `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+        if (miniAudio === audio) {
+            updateMiniPlayer();
+        }
     });
 
     /*
-    MANUAL SEEKING
+    SONG CARD SEEKING
     */
 
     progressBar.addEventListener("input", () => {
@@ -442,16 +682,29 @@ function createSong(song, songIndex) {
     });
 
     /*
+    AUDIO PLAY / PAUSE EVENTS
+    */
+
+    audio.addEventListener("play", () => {
+        playButton.textContent = "Ⅱ";
+        showMiniPlayer(audio);
+    });
+
+    audio.addEventListener("pause", () => {
+        if (!audio.ended) {
+            playButton.textContent = "▶";
+        }
+
+        if (miniAudio === audio) {
+            updateMiniPlayer();
+        }
+    });
+
+    /*
     SONG ENDED / AUTOPLAY NEXT
     */
 
     audio.addEventListener("ended", async () => {
-        if (loopEnabled) {
-            const restarted = await playAudioFromBeginning(audio);
-            playButton.textContent = restarted ? "Ⅱ" : "▶";
-            return;
-        }
-
         playButton.textContent = "▶";
         progressBar.value = 0;
 
@@ -460,6 +713,16 @@ function createSong(song, songIndex) {
 
         if (currentlyPlayingAudio === audio) {
             currentlyPlayingAudio = null;
+        }
+
+        if (miniAudio === audio) {
+            updateMiniPlayer();
+        }
+
+        if (loopEnabled) {
+            const restarted = await playAudioFromBeginning(audio);
+            playButton.textContent = restarted ? "Ⅱ" : "▶";
+            return;
         }
 
         const nextIndex = songIndex + 1;
@@ -481,24 +744,6 @@ function createSong(song, songIndex) {
         if (nextButton) {
             nextButton.textContent = started ? "Ⅱ" : "▶";
         }
-    });
-
-    /*
-    AUDIO PAUSED
-    */
-
-    audio.addEventListener("pause", () => {
-        if (!audio.ended) {
-            playButton.textContent = "▶";
-        }
-    });
-
-    /*
-    AUDIO PLAYING
-    */
-
-    audio.addEventListener("play", () => {
-        playButton.textContent = "Ⅱ";
     });
 
     songList.appendChild(songCard);
@@ -538,7 +783,8 @@ function filterSongs() {
         if (matches) visibleCount++;
     });
 
-    noSearchResults.hidden = cards.length === 0 || visibleCount !== 0;
+    noSearchResults.hidden =
+        cards.length === 0 || visibleCount !== 0;
 
     searchCount.textContent = sortedSongs.length === 0
         ? ""
