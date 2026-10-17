@@ -91,6 +91,63 @@
 
     </main>
 
+    <!-- LUNA VIBE MINI PLAYER -->
+    <section
+        id="mini-player"
+        class="mini-player"
+        aria-label="Mini music player"
+        hidden
+    >
+        <img
+            id="mini-cover"
+            class="mini-cover"
+            src=""
+            alt=""
+        >
+
+        <div class="mini-song-info">
+            <span id="mini-title" class="mini-title">Nothing playing</span>
+            <span id="mini-artist" class="mini-artist"></span>
+        </div>
+
+        <button
+            id="mini-play"
+            class="mini-control"
+            type="button"
+            aria-label="Pause"
+        >Ⅱ</button>
+
+        <button
+            id="mini-stop"
+            class="mini-control"
+            type="button"
+            aria-label="Stop and reset song"
+        >■</button>
+
+        <div class="mini-progress-container">
+            <span id="mini-current-time" class="mini-time">0:00</span>
+
+            <input
+                id="mini-progress"
+                class="mini-progress"
+                type="range"
+                min="0"
+                max="100"
+                value="0"
+                aria-label="Seek through current song"
+            >
+
+            <span id="mini-duration" class="mini-time">0:00</span>
+        </div>
+
+        <button
+            id="mini-close"
+            class="mini-control mini-close"
+            type="button"
+            aria-label="Close mini player"
+        >×</button>
+    </section>
+
     <footer>
 
         <div class="footer-left">
