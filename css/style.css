@@ -1207,3 +1207,194 @@ video {
     display: none !important;
 }
 
+
+
+
+
+/* =========================================
+   LUNA VIBE — FLOATING MINI PLAYER
+   ========================================= */
+
+body {
+    padding-bottom: 100px;
+}
+
+.mini-player[hidden] {
+    display: none !important;
+}
+
+.mini-player {
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: grid;
+    grid-template-columns: 52px minmax(100px, 1fr) 42px 42px;
+    align-items: center;
+    gap: 12px;
+
+    padding: 14px 5%;
+    background: #0d0d0d;
+    border-top: 1px solid #383838;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.45);
+
+    color: #ffffff;
+}
+
+.mini-cover {
+    width: 52px;
+    height: 52px;
+    object-fit: cover;
+    background: #242424;
+}
+
+.mini-song-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.mini-title,
+.mini-artist {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mini-title {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.mini-artist {
+    color: #8a8a8a;
+    font-size: 12px;
+}
+
+.mini-control {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #444444;
+    background: transparent;
+    color: #ffffff;
+
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.mini-control:hover {
+    background: #ffffff;
+    color: #050505;
+}
+
+.mini-control:focus-visible,
+.mini-progress:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 3px;
+}
+
+.mini-progress-container {
+    grid-column: 2 / 4;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.mini-progress {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    height: 4px;
+    accent-color: #ffffff;
+    cursor: pointer;
+}
+
+.mini-time {
+    color: #8a8a8a;
+    font-size: 11px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.mini-close {
+    grid-column: 4;
+    grid-row: 1;
+    font-size: 23px;
+}
+
+/* Desktop layout */
+@media (min-width: 701px) {
+    .mini-player {
+        grid-template-columns: 52px minmax(140px, 1fr) 42px 42px
+                               minmax(180px, 1.5fr) 42px;
+        gap: 16px;
+        padding: 14px 4%;
+    }
+
+    .mini-progress-container {
+        grid-column: auto;
+        grid-row: 1;
+    }
+
+    .mini-close {
+        grid-column: auto;
+        grid-row: 1;
+    }
+}
+
+/* Mobile layout */
+@media (max-width: 700px) {
+    body {
+        padding-bottom: 125px;
+    }
+
+    .mini-player {
+        grid-template-columns: 44px minmax(0, 1fr) 38px 38px;
+        gap: 9px;
+        padding: 12px 4%;
+    }
+
+    .mini-cover {
+        width: 44px;
+        height: 44px;
+    }
+
+    .mini-title {
+        font-size: 12px;
+    }
+
+    .mini-artist {
+        font-size: 11px;
+    }
+
+    .mini-control {
+        width: 38px;
+        height: 38px;
+    }
+
+    .mini-progress-container {
+        grid-column: 1 / 5;
+        grid-row: 2;
+        gap: 8px;
+    }
+
+    .mini-close {
+        grid-column: 4;
+        grid-row: 1;
+    }
+
+    .mini-time {
+        font-size: 10px;
+    }
+}
